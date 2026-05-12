@@ -1,273 +1,339 @@
-# 📂 项目文件导航图 — GrowthDashboard（成长仪表盘）
+# 🚀 GrowthDashboard — 成长指挥中心（完整项目导航）
 
-> 技术栈：React 19 + TypeScript + Vite 8 + Zustand（前端） | Express + Prisma + SQLite（后端）
->
-> 一句话介绍：一个带段位系统的个人成长打卡管理工具，含博客、训练、复盘、知识库、消息推送、目标管理、成就系统、热力图、生命之花、排行榜等功能。
-
----
-
-## 🗺️ 一、根目录文件（非目录）
-
-| 文件名 | 是干嘛的 | 如果你想... |
-|--------|---------|------------|
-| `package.json` | 前端项目的依赖清单和启动脚本 | 装依赖用 `npm install`，启动用 `npm run dev` |
-| `vite.config.ts` | Vite 构建配置，配了端口5173，还把 `/api` 代理到后端3000端口 | 改前端端口、改后端代理地址 |
-| `tsconfig.json` | TypeScript 根配置 | 改 TS 编译规则 |
-| `tsconfig.app.json` | 前端 src 目录的 TS 配置 | 加路径别名(@)等 |
-| `tsconfig.node.json` | Vite/Node 相关文件的 TS 配置 | 改 vite.config 的编译规则 |
-| `index.html` | 前端应用入口 HTML 文件 | 改网页标题、SEO meta 标签 |
-| `eslint.config.js` | 前端代码规范检查配置 | 改 lint 规则 |
-| `.env` / `.env.example` | 环境变量（`.env` 写真实值，`.example` 是模板） | 改 API 地址：`VITE_API_URL` |
-| `start-all.cjs` | 一键启动前端+后端的脚本（Node 写的） | 直接 `node start-all.cjs` 启动整个项目 |
-| `start-backend.js` | 只启动后端服务 | 单独启动后端 |
-| `check-end.cjs` / `check-file.cjs` / `check-line.cjs` | 调试/检查用的临时脚本 | 排查问题时用 |
-| `delete-testuser.cjs` / `get-users.cjs` | 删除测试用户 / 查看所有用户 | 管理测试数据 |
-| `test-*.cjs` / `test-*.mjs` | 各种后端 API 的测试脚本 | 调试接口时参考 |
+> **最后更新**：2026-05-12 | **版本**：v3.0  
+> **项目本质**：带内置高频刺激反馈和奖励机制的个人成长技术论坛  
+> **技术栈**：React 19 + TypeScript + Vite 8 + Zustand（前端）| Express + Prisma + SQLite（后端）  
+> **一句话介绍**：一个带段位系统的个人成长打卡管理工具，含博客、训练、复盘、知识库、消息推送、目标管理、成就系统、热力图、生命之花、排行榜等功能
 
 ---
 
-## 🖥️ 二、前端代码（`src/` 目录）
+## 📖 目录
 
-### 2.1 入口文件
-
-| 文件 | 是干嘛的 |
-|------|---------|
-| `src/main.tsx` | React 应用的启动入口，渲染 `<App />` 到页面上，顺带禁用了 Ctrl+滚轮缩放 |
-| `src/App.tsx` | 路由总控中心，定义所有页面路径和权限守卫（PrivateRoute / AdminRoute），PrivateRoute 内部已包含 Layout |
-
-### 2.2 页面（`src/pages/`）— 22 个页面
-
-#### 🏠 核心页面
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `LoginPage.tsx` | 用户登录/注册页面，有酷炫的引导动画 | 改登录页样式、动画 |
-| `CmsLoginPage.tsx` | 管理员登录页面（当前未在路由中直接使用） | 改管理员登录页样式 |
-| `HomePage.tsx` | 首页，展示今日打卡面板、名言、数据概览、段位进度 | 改首页卡片样式、布局 |
-| `DashboardPage.tsx` | 用户仪表盘（当前未在路由中使用，被 HomePage 替代） | — |
-
-#### ✅ 打卡 & 复盘
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `CheckInPage.tsx` | 打卡页面，选类别（健康/学习/工作/自律/复盘）打卡赚分 | 改打卡按钮颜色、积分规则 |
-| `ReviewPage.tsx` | 智能复盘页面，周度数据回顾 + AI 洞察 + 行动计划 | 改复盘模板、数据展示 |
-
-#### 🎯 成长中心（新增）
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `GoalsPage.tsx` | 目标管理页面，创建/跟踪/完成个人目标 | 改目标卡片样式、添加目标分类 |
-| `AchievementsPage.tsx` | 成就徽章页面，展示已获得和未获得的成就 | 改徽章设计、添加新成就 |
-| `HeatmapPage.tsx` | 打卡热力图，年/月/周三种视图的可视化打卡记录 | 改热力图颜色、布局 |
-| `LifeFlowerPage.tsx` | 生命之花（生活平衡轮），8维度雷达图展示生活平衡度 | 改维度定义、雷达图样式 |
-
-#### 📝 博客系统
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `DashboardBlogPage.tsx` | 博客仪表盘（`/blog` 路由），文章列表+快速记录+数据面板 | 改博客列表展示 |
-| `BlogPage.tsx` | 公开博客首页（当前未在路由中使用） | — |
-| `BlogPostPage.tsx` | 单篇博客文章详情页 | 改文章页排版、评论区 |
-| `BlogEditorPage.tsx` | 博客编辑器（新建/编辑文章），支持自动保存草稿 | 改编辑器界面、功能 |
-
-#### 🧠 学习 & 训练
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `LearningPage.tsx` | 学习方法页面，展示 6 种经典学习方法 | 改方法卡片样式 |
-| `TrainingPage.tsx` | 大脑训练页面，5 种小游戏（舒尔特表/N-Back/记忆卡片/斯特鲁普/象棋残局）+ 4 种冥想 | 改游戏规则、颜色 |
-| `NotesPage.tsx` | 知识库/笔记页面，增删改查笔记 | 改笔记列表、编辑器 |
-
-#### 🏆 排行 & 奖励
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `LeaderboardPage.tsx` | 排行榜页面，按积分排名，支持时间/分类筛选 | 改排行榜样式、排序 |
-| `RewardsPage.tsx` | 奖池页面，用积分兑换奖励 | 改奖励卡片、兑换逻辑 |
-
-#### ⚙️ 系统
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `SettingsPage.tsx` | 用户设置页面（主题切换、提醒设置、数据导入/导出/清空） | 改设置项、添加新主题 |
-| `PushPage.tsx` | 消息推送配置页面（浏览器通知/微信/邮件/短信） | 改推送渠道配置 |
-| `CmsPage.tsx` | 后台管理页面（用户管理+博客管理），仅管理员可见 | 改管理面板功能 |
-
-### 2.3 组件（`src/components/`）— 6 个通用组件
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `Layout.tsx` | **全局布局组件**，包含桌面端可折叠侧边栏 + 平板端顶栏 + 移动端底部导航 + 用户设置弹窗 | **改侧边栏菜单项、颜色、导航结构** |
-| `AnimatedNumber.tsx` | 数字滚动动画组件 | 改数字动画效果 |
-| `Animations.tsx` | 通用动画效果集合 | 复用动画效果 |
-| `AvatarEditor.tsx` | 头像编辑器组件 | 改头像编辑功能 |
-| `Confetti.tsx` | 撒花/彩带特效组件 | 改庆祝动画效果 |
-| `RankBadge.tsx` | 段位徽章 + 进度条 + 升级动画组件 | **改段位徽章的样式** |
-
-### 2.4 状态管理（`src/stores/`）— Zustand 写的
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `userStore.ts` | 用户状态管理（登录/注册/登出/初始化），数据持久化到 localStorage | **改用户登录逻辑、权限判断** |
-| `checkInStore.ts` | 打卡状态管理（打卡/加载今日打卡/统计），分类键统一为大写（HEALTH/STUDY/WORK/DISCIPLINE/REVIEW） | **改打卡积分规则** |
-
-### 2.5 工具库（`src/lib/`）— 6 个核心工具文件
-
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `api.ts` | **最核心文件**：封装了所有后端 API 调用（auth、user、checkIn、note、reward、review、training、blog、cms、visitor），统一 Base URL 为 `/api` | **改接口地址：改第 1 行 `API_BASE`**；改请求头；改接口参数 |
-| `db.ts` | 浏览器本地 IndexedDB 数据库操作（离线存储的降级方案），分类键统一为大写 | 改本地数据存储逻辑 |
-| `blog.ts` | 博客相关的类型定义和默认分类配置 | 改博客分类 |
-| `learningMethods.ts` | 6 种学习方法的硬编码数据（西蒙/费曼/康奈尔/卡片盒/PQ4R/间隔重复） | **改学习方法内容** |
-| `push.ts` | 消息推送逻辑（浏览器通知/微信Webhook/邮件/短信） | **改推送渠道实现** |
-| `ranks.ts` | **段位系统**：10 个段位定义 + 积分换算 + 进度计算 | **改段位名称、积分门槛、颜色** |
-
-### 2.6 样式
-
-| 文件 | 是干嘛的 |
-|------|---------|
-| `src/index.css` | **全局主题核心文件**：Aurora Glass 极光玻璃拟态主题（CSS 变量 + 玻璃卡片系统 + 极光背景光晕动画），支持 5 种主题切换（dark/light/synthwave/ocean/forest） |
-| `src/App.css` | 应用级样式（可能未使用） |
-
-### 2.8 玻璃拟态工具库（新增）
-
-| 文件 | 是干嘛的 |
-|------|---------|
-| `src/lib/glass.ts` | **Aurora Glass 样式工具集**：提供 glass.card、glass.accent、glass.success、glass.warning、glass.danger、glass.btn、glass.input 等 JS 对象，方便在页面组件中快速应用玻璃拟态样式 |
-
-### 2.7 静态资源（`src/assets/` + `public/`）
-
-| 文件 | 是干嘛的 |
-|------|---------|
-| `src/assets/hero.png` | 首页大图 |
-| `src/assets/react.svg` / `vite.svg` | React / Vite 图标 |
-| `public/favicon.svg` | 网站标签页图标 |
-| `public/icons.svg` / `pwa-192x192.svg` | PWA 图标 |
+- [一、项目概述与理念](#一项目概述与理念)
+- [二、访客模式 vs 登录模式](#二访客模式-vs-登录模式)
+- [三、核心页面详解](#三核心页面详解)
+- [四、飞轮闭环架构](#四飞轮闭环架构)
+- [五、数据库模型](#五数据库模型)
+- [六、项目目录结构](#六项目目录结构)
+- [七、快速定位指南](#七快速定位指南)
+- [八、路由结构一览](#八路由结构一览)
+- [九、侧边栏导航分组](#九侧边栏导航分组)
+- [十、当前版本状态与已知问题](#十当前版本状态与已知问题)
+- [十一、启动方式](#十一启动方式)
 
 ---
 
-## 🔧 三、后端代码（`server/` 目录）
+## 一、项目概述与理念
 
-### 3.1 入口文件
+### 核心定位
+成长指挥中心是一个集**博客发布**、**每日打卡**、**目标管理**、**AI 技能仓库**、**社交关注**于一体的个人成长飞轮系统。核心理念是将 AI 工具的使用经验沉淀为可复用的"能力宝库"，实现复合工程式的效率增长。
 
-| 文件 | 是干嘛的 |
-|------|---------|
-| `server/src/index.ts` | **后端入口**：创建 Express 应用，注册所有路由，监听 3000 端口 |
+### 灵感来源
+- **时光序** - 四象限时间管理
+- **番茄钟** - 工作休息循环
+- **抖音数字游牧人 Samuel** - AI 第二大脑概念
 
-### 3.2 数据库（`server/prisma/`）
+### 目标管理闭环
+```
+成立目标 → 拆分目标 → 完成目标 → 高反馈 → 获得积分奖励 → 形成习惯
+```
 
-| 文件 | 是干嘛的 | 如果你想... |
-|------|---------|------------|
-| `schema.prisma` | **数据库表结构定义**（User、CheckIn、Note、Reward、Review、TrainingLog、BlogPost、BlogCategory、Admin、Visitor），SQLite 数据库 | **改表结构、加字段** |
-| `data/` | 数据库文件存放目录（`dev.db`） | 备份/恢复数据库文件 |
+### 技术栈
 
-### 3.3 路由（`server/src/routes/`）— 10 个路由文件，每个对应一组 API
-
-| 文件 | 负责的 API 路径 | 是干嘛的 |
-|------|---------------|---------|
-| `auth.ts` | `/api/auth/*` | 登录/注册/获取当前用户 |
-| `user.ts` | `/api/users/*` | 用户 CRUD + 排行榜 |
-| `checkIn.ts` | `/api/checkins/*` | 打卡 CRUD + 每日统计 + 连续天数 |
-| `note.ts` | `/api/notes/*` | 笔记 CRUD |
-| `reward.ts` | `/api/rewards/*` | 奖励 CRUD + 兑换 |
-| `review.ts` | `/api/reviews/*` | 复盘 CRUD |
-| `training.ts` | `/api/training/*` | 训练日志 + 统计 |
-| `blog.ts` | `/api/blog/*` | 博客文章 + 分类 CRUD |
-| `cms.ts` | `/api/cms/*` | 管理后台接口（用户管理、打卡查看） |
-| `visitor.ts` | `/api/visitors/*` | 访客统计 |
-
-### 3.4 中间件（`server/src/middleware/`）
-
-| 文件 | 是干嘛的 |
-|------|---------|
-| `auth.ts` | JWT 鉴权中间件（验证 token、解析用户 ID） |
-| `errorHandler.ts` | 统一错误处理 + async 错误捕获包装器 |
-
-### 3.5 脚本（`server/` 根目录的 .cjs/.mjs 文件）
-
-| 文件 | 是干嘛的 |
-|------|---------|
-| `start.cjs` | 启动后端服务 |
-| `create-admin.cjs` / `seed-admin.cjs` / `promote-admin.cjs` | 创建/初始化/提升管理员账号 |
-| `check-db.cjs` / `fix-db.cjs` / `migrate.cjs` | 检查/修复/迁移数据库 |
-| `test-*.cjs` / `test-*.mjs` / `test.ps1` | 测试各种 API 接口 |
-| `quick-server.js` | 一个简化版的后端快速启动文件 |
+| 层级 | 技术 |
+|------|------|
+| 前端 | React 19 + TypeScript + Vite 8 |
+| 状态管理 | Zustand |
+| 后端 | Express.js |
+| 数据库 | SQLite (Prisma ORM) |
+| 认证 | JWT + bcrypt |
+| 推送 | Service Worker + PWA |
+| 动画 | Framer Motion |
+| UI风格 | Aurora Glass 极光玻璃拟态（赛博朋克霓虹配色） |
 
 ---
 
-## 📦 四、构建产物（`dist/` 目录）
+## 二、访客模式 vs 登录模式
 
-`npm run build` 之后生成的静态文件，可以直接部署到服务器。
+**设计原则**：访客访问主页时只会展示站长用户的博客内容、登录选项、排行榜；其他功能（大屏、打卡、训练、方法、知识库、奖池等）对他人不可见。
 
-| 文件 | 是干嘛的 |
-|------|---------|
-| `dist/index.html` | 构建后的入口 HTML |
-| `dist/assets/` | 打包后的 JS/CSS/图片 |
-| `dist/sw.js` / `workbox-*.js` | PWA Service Worker（离线缓存） |
+| 功能模块 | 👤 访客（未登录） | 🔐 已登录用户 | ⚡ 管理员 |
+|----------|-------------------|---------------|-----------|
+| 博客首页 `/blog` | ✅ 全局统计+文章列表+标签云 | ✅ 完整指挥中心+雷达图 | ✅ 完整+管理入口 |
+| 文章列表 `/blog/posts` | ✅ 浏览+搜索+分类 | ✅ 浏览+搜索+分类 | ✅ 浏览+搜索+分类 |
+| 文章详情 `/blog/:slug` | ✅ 阅读+评论查看 | ✅ 阅读+评论+收藏 | ✅ 阅读+评论+收藏 |
+| 登录页面 `/login` | ✅ 登录/注册（无管理员选项） | — | — |
+| 控制台 `/` | ❌ 需登录 | ✅ 个人仪表盘 | ✅ 个人仪表盘 |
+| 发布文章 `/blog/new` | ❌ 需登录 | ✅ 编辑发布 | ✅ 编辑发布 |
+| 每日打卡 `/checkin` | ❌ 需登录 | ✅ 打卡+进度 | ✅ 打卡+进度 |
+| 目标管理 `/goals` | ❌ 需登录 | ✅ SMART目标 | ✅ SMART目标 |
+| 技能仓库 `/skills` | ❌ 需登录 | ✅ AI技能管理 | ✅ AI技能管理 |
+| 排行榜 `/leaderboard` | ❌ 需登录 | ✅ Top1000排名+关注 | ✅ Top1000排名+关注 |
+| 系统管理 `/cms` | ❌ | ❌ | ✅ 用户+内容管理 |
+
+**CMS 权限设计**：
+- 删除 Login 页面的管理员登录选项
+- 用户登录后，在右侧导航栏显示「管理CMS」标签
+- 点击后打开管理员界面
 
 ---
 
-## 🎯 五、快速定位指南（我想改 XXX 去哪找？）
+## 三、核心页面详解
+
+### 🏠 博客首页（成长指挥中心）`/blog`
+
+**访客看到**：
+- 📊 全局统计数据（总用户数、今日打卡、总文章数）
+- 🌐 访问态势感知大屏（全球访客实时监测）
+- 📝 最新博客文章列表
+- 🏷️ 热门标签云
+
+**登录用户额外看到**：
+- 🔥 今日焦点卡片（连续打卡天数、番茄钟计时器、活跃目标）
+- 🛰️ 学习态势感知大屏（六维技能雷达图）- **需铺满布局，标题清晰可见**
+- 🥇 段位进度条（实时动态）+ 快速记录入口 - **需与打卡分布、排行榜对齐**
+- 📈 个人数据统计
+
+**键盘快捷键**：`Ctrl+K` 打开智能命令面板
+
+---
+
+### 📝 文章列表 & 发布
+
+#### 文章列表 `/blog/posts`
+- 所有用户的已发布文章
+- 支持按分类筛选（全部/技术/成长/生活/读书/思考）
+- 支持标题和内容搜索
+- 卡片式响应式布局（PC/安卓/苹果/平板）
+- 支持按最新/最热/最多点赞排序
+
+#### 发布文章 `/blog/new` (BlogEditorPage)
+- Markdown 编辑器 + 实时预览
+- 标题、摘要、分类、标签、封面图
+- 草稿自动保存（30秒间隔）
+- **发布前审核机制**：7项自审清单
+- 显示内容统计和优化建议
+
+**CMS 权限**：
+- 普通用户：发布、增删、修改自己的文章
+- 管理员：可增删用户、增加积分
+
+---
+
+### ✅ 每日打卡 `/checkin`
+
+- **5 个打卡分类**：
+  - ❤️ 健康（10 积分）
+  - 📚 学习（15 积分）
+  - 💼 工作（15 积分）
+  - 🎯 自律（20 积分）
+  - 📝 复盘（25 积分）
+- 打卡成功 → 积分动画 + Toast 提示
+- 连续打卡天数统计
+- 📅 月度日历视图 + 🔥 GitHub 风格热力图
+- 🎯 今日推进（活跃目标进度条）
+- 📓 进步本（每日学习笔记）
+
+---
+
+### 🎯 目标管理 `/goals`
+
+- **SMART 目标创建**：具体(S)、可量化(M)、可达性(A)、相关(R)、时间绑定(T) + 里程碑拆分
+- 目标分类：习惯、学习、健康、工作、健身
+- 优先级：高、中、低
+- 进度滑块实时更新
+- 完成后弹出成就 Toast → 引导"写篇复盘文章"
+- 📊 四象限矩阵分析（艾森豪威尔法则）
+- 进阶目标拆解（GoalBreakdown 组件）
+
+---
+
+### 🧠 学习 & 训练
+
+#### 训练 `/training`
+- **5 种脑力游戏**：舒尔特表 / N-Back / 记忆卡片 / 斯特鲁普 / 象棋残局
+- **4 种冥想**：呼吸冥想 / 身体扫描 / 正念冥想 / 慈悲冥想
+- 积分记录系统
+
+#### 学习方法 `/learning`
+- 6 种经典学习方法：西蒙学习法 / 费曼技巧 / 康奈尔笔记法 / 卡片盒笔记法 / PQ4R阅读法 / 间隔重复
+
+#### 知识库 `/notes`
+- OBS 笔记系统
+- 图谱关系链展示（KnowledgeGraph 组件）
+- 今日所学知识校验、检索、反馈系统
+
+---
+
+### 📦 技能仓库 `/skills`
+
+**核心功能**：
+- 📦 **5 种类型**：提示词、技能、规则、文档、智能体
+- 📂 **9 个分类**：前端开发、后端开发、AI/机器学习、效率工具、写作内容、设计创意、数据分析、通用
+- ⭐ **5 星有效性评分**
+- 🔄 使用次数追踪
+- 🏷️ 标签云检索 + 🔍 全文搜索
+
+---
+
+### 🏆 其他功能模块
+
+| 页面 | 路径 | 核心功能 |
+|------|------|---------|
+| 排行榜 | `/leaderboard` | Top1000排名 + 关注/取关 + 时间维度筛选 |
+| 成就徽章 | `/achievements` | 徽章收集墙 + 进度追踪 |
+| 热力图 | `/heatmap` | 年度打卡热力图（GitHub 风格） |
+| 生命之花 | `/lifeflower` | 8维度人生平衡雷达图 |
+| 复盘 | `/review` | 周/月复盘 + AI洞察 + 行动计划 |
+| 奖池 | `/rewards` | 积分兑换奖励 |
+| 推送设置 | `/push` | 浏览器通知/微信/邮件/短信配置 |
+| 设置 | `/settings` | 主题切换(14套)/个人信息/密码修改 |
+
+---
+
+## 四、飞轮闭环架构
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                    🔄 个人成长飞轮                        │
+│                                                          │
+│   ① 收集 ──→ ② 使用 ──→ ③ 评分 ──→ ④ 沉淀 ──→ ⑤ 输出   │
+│      ↑                                              │    │
+│      └──────────── ⑧ 推荐更多 ←────────────────────┘    │
+│                                                          │
+│  ① 技能仓库收集 AI 提示词/技能/规则                      │
+│  ② 使用技能辅助创作博客文章                              │
+│  ③ 5星评分有效性，识别高质量技能                         │
+│  ④ 每日打卡 + 目标推进，形成行为数据                     │
+│  ⑤ 输出博客文章分享经验                                 │
+│  ⑥ 评论区反馈 + 收藏 + 点赞                             │
+│  ⑦ 排行榜竞技 + 关注好友 + 动态流                       │
+│  ⑧ 智能推荐更多相似技能                                 │
+└──────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 五、数据库模型
+
+| 模型 | 用途 | 状态 |
+|------|------|------|
+| Admin | 管理员账户（JWT认证） | ✅ |
+| User | 用户信息（名称、头像、积分、角色） | ✅ |
+| BlogPost | 博客文章（标题、内容、分类、标签、阅读量、点赞） | ✅ |
+| CheckIn | 每日打卡记录（分类、积分、日期） | ✅ |
+| Goal | SMART 目标（类型、进度、状态、优先级） | ✅ |
+| Achievement | 成就系统 | ✅ |
+| Review | 复盘记录 | ✅ |
+| Notification | 通知中心（打卡提醒、成就解锁、段位升级） | ✅ |
+| Follow | 关注/取关关系 | ✅ |
+| Milestone | 里程碑追踪 | ✅ |
+| SkillDepot | AI 技能仓库（提示词、技能、规则、文档、智能体） | ✅ |
+| Visitor | 访客统计 | ✅ |
+
+---
+
+## 六、项目目录结构
+
+```
+GrowthDashboard/
+├── src/                          # 前端源码
+│   ├── components/               # 38 个复用组件
+│   │   ├── Layout.tsx            # 全局布局 + 侧边栏导航
+│   │   ├── RadarChart.tsx        # Canvas 六维雷达图
+│   │   ├── KasperskyGlobe.tsx    # 3D 地球访客监测
+│   │   ├── GoalCard.tsx          # 目标卡片（连击+里程碑+粒子）
+│   │   ├── GoalBreakdown.tsx     # OKR 目标拆解
+│   │   ├── QuadrantMatrix.tsx    # 四象限矩阵
+│   │   ├── KnowledgeGraph.tsx    # ECharts 知识图谱
+│   │   ├── StreakCalendar.tsx    # GitHub 风格热力图
+│   │   ├── RankBadge.tsx         # 段位徽章 + 升级动画
+│   │   └── ...                   # 其他组件
+│   ├── pages/                    # 15 个页面
+│   │   ├── DashboardBlogPage.tsx # 博客仪表盘（成长指挥中心）
+│   │   ├── HomePage.tsx          # 用户首页
+│   │   ├── CheckInPage.tsx       # 每日打卡
+│   │   ├── GoalsPage.tsx         # 目标管理
+│   │   ├── TrainingPage.tsx      # 专注训练
+│   │   ├── NotesPage.tsx         # 知识库（PARA视图）
+│   │   └── ...                   # 其他页面
+│   ├── stores/                   # Zustand 状态管理
+│   │   ├── userStore.ts          # 用户状态
+│   │   └── pomodoroStore.ts      # 番茄钟状态
+│   └── lib/                      # 工具库
+│       ├── api.ts                # API 客户端封装
+│       ├── db.ts                 # IndexedDB 本地存储
+│       └── ranks.ts              # 段位系统定义
+├── server/                       # 后端 Express + Prisma
+│   └── src/routes/               # API 路由
+│       ├── user.ts               # 用户认证
+│       ├── checkIn.ts            # 打卡系统
+│       ├── goal.ts               # 目标管理
+│       ├── blog.ts               # 博客系统
+│       └── ...                   # 其他路由
+├── .trae/skills/                 # 257 个 AI Agent 技能
+└── scripts/                      # PowerShell 管理脚本
+```
+
+---
+
+## 七、快速定位指南（我想改 XXX 去哪找？）
 
 | 你想做什么 | 去找这个文件 |
 |-----------|------------|
-| **改登录按钮颜色** | `src/pages/LoginPage.tsx` |
+| **改登录按钮颜色/样式** | `src/pages/LoginPage.tsx` |
 | **改接口访问地址** | `src/lib/api.ts` 第 1 行 `API_BASE` + `.env` 的 `VITE_API_URL` |
-| **改侧边栏菜单** | `src/components/Layout.tsx` 里的 `PRIVATE_NAV` 数组 |
-| **改段位名称/门槛** | `src/lib/ranks.ts` 里的 `RANKS` 对象 |
-| **改积分规则** | `server/src/routes/checkIn.ts` 的 `POINTS_MAP` |
-| **改学习方法内容** | `src/lib/learningMethods.ts` 里的 `LEARNING_METHODS` 数组 |
+| **改侧边栏菜单项** | `src/components/Layout.tsx` 里的导航配置 |
+| **改段位名称/积分门槛** | `src/lib/ranks.ts` 里的 `RANKS` 对象 |
+| **改打卡积分规则** | `server/src/routes/checkIn.ts` 的 `POINTS_MAP` 或 `src/lib/db.ts` 的 `addCheckIn` |
+| **改学习方法内容** | `src/lib/learningMethods.ts` 里的数组 |
 | **改数据库表结构** | `server/prisma/schema.prisma` |
 | **改博客分类** | `src/lib/blog.ts` 里的 `DEFAULT_CATEGORIES` |
-| **改推送渠道配置** | `src/lib/push.ts` + `src/pages/PushPage.tsx` |
-| **改后端端口号** | `server/src/index.ts` 的 `PORT` |
-| **改前端代理地址** | `vite.config.ts` 的 proxy 配置 |
-| **改管理员后台功能** | `src/pages/CmsPage.tsx` + `server/src/routes/cms.ts` |
-| **改训练游戏逻辑** | `src/pages/TrainingPage.tsx` |
-| **改首页名言** | `src/pages/HomePage.tsx` 里的 `quotes` 数组 |
-| **改主题色/样式** | `src/index.css` 里的 CSS 变量（Aurora Glass 极光玻璃拟态主题，支持 dark/light/synthwave/ocean/forest 5种主题） |
-| **改玻璃卡片样式** | `src/lib/glass.ts` 样式工具集 + `src/index.css` 中的 `.glass-card` 系列 CSS 类 |
+| **改雷达图数据显示** | `src/pages/DashboardBlogPage.tsx` 的 dimensions 计算 + `src/components/RadarChart.tsx` |
+| **改主题色/样式** | `src/index.css` 里的 CSS 变量（14套主题） |
 | **改目标管理功能** | `src/pages/GoalsPage.tsx` |
 | **改成就徽章** | `src/pages/AchievementsPage.tsx` |
-| **改热力图展示** | `src/pages/HeatmapPage.tsx` |
-| **改生命之花维度** | `src/pages/LifeFlowerPage.tsx` 里的 `dimensions` 数组 |
-| **改排行榜规则** | `src/pages/LeaderboardPage.tsx` |
-| **改复盘数据** | `src/pages/ReviewPage.tsx` |
-| **改设置页面** | `src/pages/SettingsPage.tsx` |
-| **改打卡分类** | `src/pages/CheckInPage.tsx` 的 `categories` 数组 + `src/lib/db.ts` 的 `CheckIn` 接口 |
+| **改排行榜（显示Top1000）** | `src/pages/LeaderboardPage.tsx` |
+| **改管理员后台** | `src/pages/CmsPage.tsx` + `server/src/routes/cms.ts` |
+| **禁用鼠标缩放** | `src/main.tsx` (已实现) |
 
 ---
 
-## 🔄 六、路由结构一览
+## 八、路由结构一览
 
-| 路径 | 页面组件 | 权限 |
-|------|----------|------|
-| `/login` | LoginPage | 公开 |
-| `/blog` | DashboardBlogPage | 公开 |
-| `/blog/new` | BlogEditorPage | 需登录 |
-| `/blog/:slug` | BlogPostPage | 公开（有 Layout） |
-| `/` | HomePage | 需登录 |
-| `/checkin` | CheckInPage | 需登录 |
-| `/review` | ReviewPage | 需登录 |
-| `/goals` | GoalsPage | 需登录 |
-| `/achievements` | AchievementsPage | 需登录 |
-| `/heatmap` | HeatmapPage | 需登录 |
-| `/lifeflower` | LifeFlowerPage | 需登录 |
-| `/leaderboard` | LeaderboardPage | 需登录 |
-| `/training` | TrainingPage | 需登录 |
-| `/learning` | LearningPage | 需登录 |
-| `/notes` | NotesPage | 需登录 |
-| `/rewards` | RewardsPage | 需登录 |
-| `/push` | PushPage | 需登录 |
-| `/settings` | SettingsPage | 需登录 |
-| `/cms` | CmsPage | 需管理员 |
+| 路径 | 页面组件 | 权限 | 功能 |
+|------|----------|------|------|
+| `/login` | LoginPage | 公开 | 用户登录/注册 |
+| `/cms/login` | CmsLoginPage | 公开 | 管理员登录 |
+| `/blog` | DashboardBlogPage | 公开 | 博客仪表盘（态势感知图+雷达） |
+| `/blog/posts` | BlogPage | 公开 | 文章列表+搜索 |
+| `/blog/post/:slug` | BlogPostPage | 公开 | 文章详情+评论 |
+| `/blog/editor` | BlogEditorPage | 登录 | 文章编辑器 |
+| `/` | HomePage | 登录 | 用户仪表盘 |
+| `/goals` | GoalsPage | 登录 | 目标中心+四象限 |
+| `/checkin` | CheckInPage | 登录 | 每日打卡+日历 |
+| `/training` | TrainingPage | 登录 | 专注训练（舒尔特等） |
+| `/knowledge` | NotesPage | 登录 | 知识库+图谱 |
+| `/achievements` | AchievementsPage | 登录 | 成就系统（40徽章） |
+| `/life-flower` | LifeFlowerPage | 登录 | 生命之花8维度 |
+| `/settings` | SettingsPage | 登录 | 设置（主题/个人信息） |
+| `/journal` | ProgressJournal | 登录 | 进度日记 |
+| `/leaderboard` | LeaderboardPage | 登录 | 积分排行榜(Top1000) |
+| `/heatmap` | HeatmapPage | 登录 | 打卡热力图 |
+| `/review` | ReviewPage | 登录 | 周期复盘 |
+| `/learning` | LearningPage | 登录 | 学习方法库 |
+| `/notes` | NotesPage | 登录 | 笔记管理 |
+| `/rewards` | RewardsPage | 登录 | 积分兑换商城 |
+| `/training` | TrainingPage | 登录 | 大脑训练 |
+| `/push` | PushPage | 登录 | 推送通知配置 |
+| `/skills` | SkillDepotPage | 登录 | AI技能仓库 |
+| `/cms` | CmsPage | 管理员 | 后台管理 |
 
 ---
 
-## 🧭 七、导航分组（侧边栏）
+## 九、侧边栏导航分组
 
-桌面端侧边栏按功能分为 6 组：
+桌面端侧边栏按功能分为 **6 组 + 管理组**：
 
 | 分组 | 包含页面 | 图标色 |
 |------|---------|--------|
@@ -277,4 +343,64 @@
 | ✅ 日常打卡 | 打卡、复盘、排行榜 | 橙色 `#ffaa00` |
 | 🎁 奖励中心 | 奖池、推送 | 粉色 `#ff00aa` |
 | ⚙️ 系统 | 设置 | 紫色 `#dda0dd` |
-| ⚙️ 系统管理 | 管理（仅管理员可见） | 红色 `#ff6b6b` |
+| 🔒 系统管理 | 管理（仅管理员） | 红色 `#ff6b6b` |
+
+---
+
+## 十、当前版本状态与已知问题
+
+### ✅ 最近修复（v3.0 - 2026-05-12）
+- ✅ **雷达图数据显示修复**：使用多维度真实数据（打卡+训练+笔记），替换 CSS 变量为硬编码颜色
+- ✅ **Git 仓库初始化并推送到 GitHub**
+
+### ⚠️ 已知待办事项（来自需求草稿）
+
+**高优先级**：
+- [ ] **响应式布局优化**：PC / 安卓 / 苹果 / 平板等移动端适配
+- [ ] **导航精简**：删除重复的博客标签导航，保持顶部单一导航
+- [ ] **布局对齐**：段位进度、打卡分布、排行榜三者对齐
+- [ ] **排行榜扩展**：支持显示前 1000 名用户
+
+**中优先级**：
+- [ ] **布局检测**：检查整个项目布局是否对称一致
+- [ ] **BUG 全面排查**：系统性检查项目错误
+- [ ] **CMS 权限完善**：管理员可增删用户、调整积分
+
+**低优先级（未来规划）**：
+- [ ] **OBS 知识库增强**：图显关系链、知识校验检索反馈
+- [ ] **名言自动刷新** + 管理员权限自动判断显示/隐藏管理选项
+
+### 📊 审计状态（2026-05-06）
+- ✅ 前端构建零错误
+- ✅ 后端启动正常
+- ✅ JWT 认证正常
+- ✅ 访客/登录模式正确区分
+- ✅ 全项目 UI 文本已中文化
+
+---
+
+## 十一、启动方式
+
+```bash
+# 1. 安装依赖
+npm install
+
+# 2. 启动前端开发服务器（端口 5173）
+npm run dev
+
+# 3. 启动后端服务（端口 3000）
+cd server && npx tsx src/index.ts
+
+# 或一键启动（推荐）
+node start-all.cjs
+
+# 4. 构建生产版本
+npm run build
+```
+
+**环境变量配置**：复制 `.env.example` 为 `.env`，填写真实值
+
+---
+
+*Built with ❤️ using TRAE IDE — 从"再做一次"到"以后都更容易"*  
+*Last Updated: 2026-05-12 | Version: 3.0*
