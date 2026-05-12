@@ -1,0 +1,465 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  name         String    @unique
+  email        String?
+  phone        String?
+  password     String?
+  avatar       String?
+  points       Int       @default(0)
+  role         Role      @default(USER)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  lastActiveAt DateTime?
+
+  checkIns      CheckIn[]
+  notes        Note[]
+  rewards     Reward[]
+  reviews     Review[]
+  trainingLogs TrainingLog[]
+  goals        Goal[]
+  badges       UserBadge[]
+  habitReminders HabitReminder[]
+  themePreference ThemePreference?
+  weeklyReports  WeeklyReport[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model CheckIn {
+  id        String   @id @default(uuid())
+  userId    String
+  category Category
+  points   Int
+  timestamp DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([category])
+  @@index([timestamp])
+}
+
+enum Category {
+  HEALTH
+  STUDY
+  WORK
+  DISCIPLINE
+  REVIEW
+}
+
+model Note {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  content   String
+  tags      String   @default("[]")
+  points    Int      @default(5)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Reward {
+  id          String   @id @default(uuid())
+  userId      String
+  name       String
+  pointsCost Int
+  redeemed   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Review {
+  id        String   @id @default(uuid())
+  userId    String
+  type     ReviewType
+  content  String
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum ReviewType {
+  WEEKLY
+  MONTHLY
+}
+
+model TrainingLog {
+  id        String   @id @default(uuid())
+  userId    String
+  type      TrainingType
+  points    Int
+  detail   String?
+  timestamp DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+enum TrainingType {
+  MEDITATION
+  SCHULTE
+  NBAK
+  MEMORY
+  STROOP
+  CHESS
+}
+
+model BlogPost {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content    String
+  coverImage String?
+  category   String
+  tags       String   @default("[]")
+  author     String
+  publishedAt DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  views     Int      @default(0)
+  likes     Int      @default(0)
+  isPublished Boolean @default(false)
+
+  comments Comment[]
+  favorites Favorite[]
+}
+
+model BlogCategory {
+  id    String @id @default(uuid())
+  name  String
+  slug  String @unique
+  color String
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  username String @unique
+  password String
+  role     String @default("admin")
+  createdAt DateTime @default(now())
+}
+
+model Visitor {
+  id        String   @id @default(uuid())
+  ip        String
+  country   String?
+  city      String?
+  device    String?
+  browser   String?
+  os        String?
+  path      String?
+  visitedAt DateTime @default(now())
+
+  @@index([ip])
+  @@index([visitedAt])
+}
+
+model Goal {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  description String?
+  category    GoalCategory @default(OTHER)
+  targetValue Int      @default(1)
+  currentValue Int     @default(0)
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  status      GoalStatus @default(IN_PROGRESS)
+  priority    Priority  @default(MEDIUM)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([status])
+}
+
+enum GoalCategory {
+  HEALTH
+  STUDY
+  WORK
+  FITNESS
+  HABIT
+  OTHER
+}
+
+enum GoalStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Badge {
+  id          String   @id @default(uuid())
+  code        String   @unique
+  name        String
+  description String
+  icon        String
+  category    BadgeCategory
+  requirement Int      @default(1)
+  points      Int      @default(10)
+  createdAt   DateTime @default(now())
+
+  userBadges  UserBadge[]
+}
+
+enum BadgeCategory {
+  CHECKIN
+  STREAK
+  TRAINING
+  NOTES
+  BLOG
+  SOCIAL
+  SPECIAL
+}
+
+model UserBadge {
+  id        String   @id @default(uuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge Badge @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model HabitReminder {
+  id        String   @id @default(uuid())
+  userId    String
+  category  Category
+  time      String   @default("09:00")
+  enabled   Boolean  @default(true)
+  days      String   @default("1,2,3,4,5,6,7")
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ThemePreference {
+  id       String @id @default(uuid())
+  userId   String @unique
+  theme    String @default("dark")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model WeeklyReport {
+  id          String   @id @default(uuid())
+  userId      String
+  weekStart   DateTime
+  weekEnd     DateTime
+  totalCheckIns Int    @default(0)
+  totalPoints Int      @default(0)
+  totalTraining Int    @default(0)
+  totalNotes   Int     @default(0)
+  topCategory  String?
+  improvement  String?
+  summary      String?
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStart])
+  @@index([userId])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model Follow {
+  id          String   @id @default(uuid())
+  followerId  String
+  followingId String
+  createdAt   DateTime @default(now())
+
+  @@unique([followerId, followingId])
+  @@index([followerId])
+  @@index([followingId])
+}
+
+model Milestone {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String
+  title       String
+  description String
+  value       Int
+  threshold   Int
+  achieved    Boolean  @default(false)
+  achievedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+  @@index([type])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  postId    String
+  author    String
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId])
+  @@index([createdAt])
+}
+
+model Favorite {
+  id        String   @id @default(uuid())
+  postId    String
+  userId    String
+  createdAt DateTime @default(now())
+
+  post BlogPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([postId])
+  @@index([userId])
+}
+
+model Subscription {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([email])
+}
+
+model SkillDepot {
+  id          String   @id @default(uuid())
+  userId      String
+  title       String
+  content     String
+  type        SkillType
+  category    String   @default("general")
+  tags        String   @default("[]")
+  effectiveness Int   @default(0)
+  usageCount  Int      @default(0)
+  source      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([type])
+  @@index([category])
+}
+
+enum SkillType {
+  PROMPT
+  SKILL
+  RULE
+  DOC
+  AGENT
+}
+
+model KnowledgeNode {
+  id          String     @id @default(uuid())
+  name        String
+  description String?
+  type        NodeType   @default(ENTITY)
+  icon        String?
+  category    String?
+  articleId   String?
+  blogPostId  String?
+  isCategory  Boolean    @default(false)
+  weight      Int        @default(1)
+  metadata    String?    @default("{}")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  fromEdges   KnowledgeEdge[] @relation("FromNode")
+  toEdges     KnowledgeEdge[] @relation("ToNode")
+
+  @@index([type])
+  @@index([category])
+  @@index([isCategory])
+  @@index([name])
+}
+
+model KnowledgeEdge {
+  id          String       @id @default(uuid())
+  fromId      String
+  toId        String
+  relation    RelationType @default(RELATED_TO)
+  weight      Float        @default(1.0)
+  description String?
+  createdAt   DateTime     @default(now())
+
+  fromNode    KnowledgeNode @relation("FromNode", fields: [fromId], references: [id], onDelete: Cascade)
+  toNode      KnowledgeNode @relation("ToNode", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@index([fromId])
+  @@index([toId])
+  @@index([relation])
+}
+
+enum NodeType {
+  ENTITY
+  CONCEPT
+  CATEGORY
+  TAG
+  ARTICLE
+}
+
+enum RelationType {
+  BELONGS_TO
+  RELATED_TO
+  HAS_TAG
+  INSTANCE_OF
+  SIMILAR_TO
+  DEPENDS_ON
+  AUTHORED_BY
+  SUPERCEDES
+}

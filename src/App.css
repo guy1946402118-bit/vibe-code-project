@@ -1,0 +1,5 @@
+/* App-level styles kept minimal — global styles are in index.css */
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
