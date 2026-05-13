@@ -1,4 +1,4 @@
-﻿﻿import { useEffect, useState } from 'react';
+﻿﻿﻿﻿﻿﻿import { useEffect, useState } from 'react';
 import { useCheckInStore } from '../stores/checkInStore';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { Confetti } from '../components/Confetti';

@@ -1,4 +1,4 @@
-﻿﻿import { useEffect, useRef, useState } from 'react';
+﻿﻿﻿﻿﻿﻿import { useEffect, useRef, useState } from 'react';
 import * as echarts from 'echarts';
 import type { KnowledgeGraphData } from '../lib/api';
 

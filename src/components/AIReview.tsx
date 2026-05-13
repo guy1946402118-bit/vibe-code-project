@@ -1,4 +1,4 @@
-﻿﻿import { useState, useEffect } from 'react';
+﻿﻿﻿﻿﻿﻿import { useState, useEffect } from 'react';
 import { generateWeeklyReport, generateMonthlyReport } from '../lib/reportGenerator';
 import type { ReportData } from '../lib/reportGenerator';
 

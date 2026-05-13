@@ -74,11 +74,40 @@ app.use(async (req, res, next) => {
                    req.socket?.remoteAddress ||
                    'unknown';
 
+  const userAgent = req.headers['user-agent']?.toString() || '';
+  let browser = 'Unknown';
+  let os = 'Unknown';
+  let device = 'desktop';
+  let country = null;
+  let city = null;
+
+  if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) browser = 'Chrome';
+  else if (userAgent.includes('Firefox')) browser = 'Firefox';
+  else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
+  else if (userAgent.includes('Edg')) browser = 'Edge';
+  else if (userAgent.includes('Opera') || userAgent.includes('OPR')) browser = 'Opera';
+
+  if (userAgent.includes('Windows')) os = 'Windows';
+  else if (userAgent.includes('Mac OS')) os = 'Mac OS';
+  else if (userAgent.includes('Linux')) os = 'Linux';
+  else if (userAgent.includes('Android')) { os = 'Android'; device = 'mobile'; }
+  else if (userAgent.includes('iPhone') || userAgent.includes('iPad')) { os = 'iOS'; device = userAgent.includes('iPad') ? 'tablet' : 'mobile'; }
+
+  if (clientIP === '::1' || clientIP === '127.0.0.1') {
+    country = '本地';
+    city = 'localhost';
+  }
+
   try {
     await prisma.visitor.create({
       data: {
         ip: clientIP.replace('::ffff:', ''),
         path: req.path,
+        browser,
+        os,
+        device,
+        country,
+        city,
       },
     });
   } catch (e) {

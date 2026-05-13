@@ -3,14 +3,23 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  optimizeDeps: {
+    enabled: false,
+  },
+  experimental: {
+    optimizeDeps: {
+      enabled: false,
+    },
+  },
   server: {
     host: '0.0.0.0',
     port: 5173,
     watch: {
-      ignored: ['**/MetaGPT/**', '**/pentagi/**'],
+      ignored: ['**/MetaGPT/**', '**/pentagi/**', '**/node_modules/**'],
     },
     fs: {
-      deny: ['MetaGPT/**/*', 'pentagi/**/*'],
+      allow: ['.', 'src', 'public'],
+      deny: ['MetaGPT', 'pentagi', '.trae'],
     },
     proxy: {
       '/api': {

@@ -1,7 +1,7 @@
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **GrowthDashboard** (2553 symbols, 3962 relationships, 127 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **vibe-code-project** (21455 symbols, 40644 relationships, 300 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -24,10 +24,10 @@ This project is indexed by GitNexus as **GrowthDashboard** (2553 symbols, 3962 r
 
 | Resource | Use for |
 |----------|---------|
-| `gitnexus://repo/GrowthDashboard/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/GrowthDashboard/clusters` | All functional areas |
-| `gitnexus://repo/GrowthDashboard/processes` | All execution flows |
-| `gitnexus://repo/GrowthDashboard/process/{name}` | Step-by-step execution trace |
+| `gitnexus://repo/vibe-code-project/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/vibe-code-project/clusters` | All functional areas |
+| `gitnexus://repo/vibe-code-project/processes` | All execution flows |
+| `gitnexus://repo/vibe-code-project/process/{name}` | Step-by-step execution trace |
 
 ## CLI
 

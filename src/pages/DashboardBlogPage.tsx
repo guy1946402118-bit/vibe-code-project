@@ -1,4 +1,4 @@
-﻿﻿import { useEffect, useState, useRef } from 'react';
+﻿﻿﻿﻿﻿import { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useUserStore } from '../stores/userStore';
 import { usePomodoroStore } from '../stores/pomodoroStore';
@@ -14,7 +14,7 @@ import { SmartSuggestions } from '../components/SmartSuggestions';
 import { showToast } from '../components/Toast';
 
 interface LeaderUser { id: string; name: string; avatar?: string; points: number; rank: RankInfo; }
-interface VisitorRecord { id: string; ip: string; path: string; visitedAt: string; }
+interface VisitorRecord { id: string; ip: string; path: string; visitedAt: string; country?: string; city?: string; device?: string; browser?: string; os?: string; }
 interface VisitorStats { todayCount: number; weekCount: number; totalCount: number; uniqueIPs: number; topCountries: any[]; hourlyStats: any[]; }
 
 const CATEGORIES = [
@@ -104,6 +104,44 @@ export function DashboardBlogPage() {
     };
     fetchUserData();
   }, [currentUser]);
+
+  useEffect(() => {
+    const recordVisit = async () => {
+      try {
+        const userAgent = navigator.userAgent;
+        let browser = 'Unknown';
+        let os = 'Unknown';
+        let device = 'desktop';
+
+        if (userAgent.includes('Chrome') && !userAgent.includes('Edg')) browser = 'Chrome';
+        else if (userAgent.includes('Firefox')) browser = 'Firefox';
+        else if (userAgent.includes('Safari') && !userAgent.includes('Chrome')) browser = 'Safari';
+        else if (userAgent.includes('Edg')) browser = 'Edge';
+        else if (userAgent.includes('Opera') || userAgent.includes('OPR')) browser = 'Opera';
+
+        if (userAgent.includes('Windows')) os = 'Windows';
+        else if (userAgent.includes('Mac OS')) os = 'Mac OS';
+        else if (userAgent.includes('Linux')) os = 'Linux';
+        else if (userAgent.includes('Android')) { os = 'Android'; device = 'mobile'; }
+        else if (userAgent.includes('iPhone') || userAgent.includes('iPad')) { os = 'iOS'; device = userAgent.includes('iPad') ? 'tablet' : 'mobile'; }
+
+        await fetch('/api/visitors/record', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ip: 'localhost',
+            path: window.location.pathname,
+            browser,
+            os,
+            device,
+            country: '本地',
+            city: 'localhost',
+          }),
+        });
+      } catch { /* ignore */ }
+    };
+    recordVisit();
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -376,9 +414,10 @@ export function DashboardBlogPage() {
         )}
 
         {/* ====== 双大屏：学习态势感知 ║ 访问态势感知 ====== */}
-        <div className="dual-screens" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '20px' }}>
+        <div className="dual-screens" style={{ display: 'grid', gridTemplateColumns: currentUser ? '1fr 1fr' : '1fr', gap: '20px', marginBottom: '20px' }}>
 
-          {/* --- 左屏：学习态势感知 --- */}
+          {/* --- 左屏：学习态势感知（仅登录用户）--- */}
+          {currentUser && (
           <div style={{ ...panelStyle, padding: '24px', background: 'linear-gradient(135deg, var(--accent-dim) 0%, rgba(0,240,255,0.01) 100%)' }}>
             <div style={cornerLines('var(--matrix-green)')} /><div style={cornerLinesBR('var(--matrix-green)')} />
             <SectionTitle icon="🛰️" title="成长雷达" subtitle="六维能力实时监测" color="var(--matrix-green)" />
@@ -404,29 +443,13 @@ export function DashboardBlogPage() {
                   let reviewScore = Math.min(Math.round(reviewCheckIns.length * 10 * 1.2), 100);
                   let growthScore = Math.min(Math.round(points / 4 + activeGoals.length * 8 + blogStats.totalPosts * 2), 100);
 
-                  if (currentUser) {
-                    healthScore = healthScore || 15;
-                    studyScore = studyScore || 20;
-                    workScore = workScore || 12;
-                    disciplineScore = disciplineScore || 18;
-                    reviewScore = reviewScore || 10;
-                    growthScore = growthScore || 25;
-                  } else {
-                    healthScore = 0;
-                    studyScore = 0;
-                    workScore = 0;
-                    disciplineScore = 0;
-                    reviewScore = 0;
-                    growthScore = 0;
-                  }
-
                   return [
-                    { label: '健康', value: healthScore, maxValue: 100, color: '#00ff88' },
-                    { label: '学习', value: studyScore, maxValue: 100, color: '#00f0ff' },
-                    { label: '工作', value: workScore, maxValue: 100, color: '#ffd93d' },
-                    { label: '自律', value: disciplineScore, maxValue: 100, color: '#ff6b6b' },
-                    { label: '复盘', value: reviewScore, maxValue: 100, color: '#c084fc' },
-                    { label: '成长', value: growthScore, maxValue: 100, color: 'var(--matrix-green)' },
+                    { label: '健康', value: healthScore || 15, maxValue: 100, color: '#00ff88' },
+                    { label: '学习', value: studyScore || 20, maxValue: 100, color: '#00f0ff' },
+                    { label: '工作', value: workScore || 12, maxValue: 100, color: '#ffd93d' },
+                    { label: '自律', value: disciplineScore || 18, maxValue: 100, color: '#ff6b6b' },
+                    { label: '复盘', value: reviewScore || 10, maxValue: 100, color: '#c084fc' },
+                    { label: '成长', value: growthScore || 25, maxValue: 100, color: 'var(--matrix-green)' },
                   ];
                 })()}
                 width={520} height={380}
@@ -449,6 +472,7 @@ export function DashboardBlogPage() {
               ))}
             </div>
           </div>
+          )}
 
           {/* --- 右屏：访问态势感知 --- */}
           <div style={{ ...panelStyle, padding: '24px', background: 'linear-gradient(135deg, rgba(0,240,255,0.03) 0%, rgba(0,240,255,0.01) 100%)' }}>
@@ -456,7 +480,7 @@ export function DashboardBlogPage() {
             <SectionTitle icon="🌐" title="访问态势感知" subtitle="全球访客实时监测" color="#00f0ff" />
 
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '12px' }}>
-              <KasperskyGlobe width={600} height={340} />
+              <KasperskyGlobe width={currentUser ? 600 : 900} height={340} />
             </div>
 
             {/* 访客核心指标 */}
@@ -476,25 +500,51 @@ export function DashboardBlogPage() {
 
             {/* 最近访问列表 */}
             <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', fontFamily: "'Courier New', monospace", marginBottom: '8px' }}>▸ 最近访问记录</div>
-            <div style={{ maxHeight: '130px', overflowY: 'auto' }}>
-              {recentVisitors.slice(0, 6).map((v, i) => (
+            <div style={{ maxHeight: '180px', overflowY: 'auto' }}>
+              {recentVisitors.slice(0, 8).map((v, i) => (
                 <div key={i} style={{
-                  display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                  padding: '5px 8px', borderBottom: '1px solid rgba(0,240,255,0.05)',
+                  padding: '10px 12px', borderBottom: '1px solid rgba(0,240,255,0.05)',
                   fontSize: '10px', fontFamily: "'Courier New', monospace",
+                  transition: 'background 0.2s',
                 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#00f0ff', opacity: 0.6, flexShrink: 0 }} />
-                    <span style={{ color: '#00f0ff' }}>{v.ip}</span>
-                    <span style={{ color: 'rgba(255,255,255,0.25)', fontSize: '9px' }}>{v.path}</span>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#00f0ff', opacity: 0.7, flexShrink: 0 }} />
+                      <span style={{ color: '#00f0ff', fontWeight: '600' }}>{v.ip}</span>
+                      {v.country && (
+                        <span style={{ padding: '2px 6px', borderRadius: '6px', background: 'rgba(0,240,255,0.1)', color: '#00f0ff', fontSize: '8px' }}>
+                          🌍 {v.country}{v.city && ` · ${v.city}`}
+                        </span>
+                      )}
+                    </div>
+                    <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '9px' }}>
+                      {new Date(v.visitedAt).toLocaleString('zh-CN', { 
+                        month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' 
+                      })}
+                    </span>
                   </div>
-                  <span style={{ color: 'rgba(255,255,255,0.3)' }}>
-                    {new Date(v.visitedAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingLeft: '14px' }}>
+                    <span style={{ color: 'rgba(255,255,255,0.5)' }}>📄 {v.path}</span>
+                    {v.browser && (
+                      <span style={{ color: 'rgba(0,255,136,0.6)', fontSize: '9px' }}>
+                        🌐 {v.browser}
+                      </span>
+                    )}
+                    {v.os && (
+                      <span style={{ color: 'rgba(255,217,61,0.6)', fontSize: '9px' }}>
+                        🖥️ {v.os}
+                      </span>
+                    )}
+                    {v.device && (
+                      <span style={{ color: 'rgba(192,132,252,0.6)', fontSize: '9px' }}>
+                        {v.device === 'mobile' ? '📱' : v.device === 'tablet' ? '📲' : '🖥️'} {v.device}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
               {recentVisitors.length === 0 && (
-                <div style={{ color: 'rgba(255,255,255,0.2)', textAlign: 'center', padding: '16px', fontSize: '11px', fontFamily: "'Courier New', monospace" }}>暂无访问记录</div>
+                <div style={{ color: 'rgba(255,255,255,0.2)', textAlign: 'center', padding: '20px', fontSize: '11px', fontFamily: "'Courier New', monospace" }}>暂无访问记录</div>
               )}
             </div>
           </div>
